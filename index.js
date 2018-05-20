@@ -48,9 +48,11 @@ const options = {
 };
 // https://firestore.googleapis.com/v1beta1/{document.name=projects/*/databases/*/documents/*/**}
 
-const body = {
+const field = "2018-05-09T04:41:13+08:00";
+
+const requestbody = {
  "fields": {
-  "2018-05-09T04:41:13+08:00": {
+  [field] : {
    "mapValue": {
     "fields": {
      "Position": {
@@ -75,14 +77,18 @@ const body = {
 request(options)
   .then( (body) => {
     console.log(body);
-    let a = 'https://firestore.googleapis.com/v1beta1/projects/futures-ai/databases/(default)/documents/test_strategies/hello?currentDocument.exists=true&key='
-      console.log(a);
+    let a = 'https://firestore.googleapis.com/v1beta1/projects/futures-ai/databases/(default)/documents/test_strategies/hello?';
+    // updateMask.fieldPaths=%602015-01-20T09%3A36%3A40%2B08%3A00%60
+    a += 'updateMask.fieldPaths=' +  encodeURIComponent('`' + field + '`')
+    console.log(a);
+    console.log(requestbody);
     request({
       method: 'PATCH',
       url: a,
       auth: {
         'bearer': body.access_token
-      }
+      }, 
+      'body': JSON.stringify(requestbody)
 
     }).catch(err => {
       console.log(err.message);
